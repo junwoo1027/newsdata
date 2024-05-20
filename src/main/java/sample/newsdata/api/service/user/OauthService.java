@@ -8,6 +8,7 @@ import sample.newsdata.config.OauthConfig;
 import sample.newsdata.domain.user.User;
 
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -21,12 +22,11 @@ public class OauthService {
         String accessTokenResponse = gitHubClient.getAccessToken(oauthConfig.clientId, oauthConfig.clientSecret, code);
         String accessToken = parseAccessToken(accessTokenResponse);
         Map<String, Object> userInfoMap = gitHubUserClient.getUser("token " + accessToken);
-        String username = userInfoMap.get("name").toString();
-        String email = userInfoMap.get("email").toString();
 
-        if (username == null || email == null) {
-            throw new IllegalArgumentException("Invalid user information.");
-        }
+        String username = Optional.ofNullable(userInfoMap.get("name")).map(Object::toString)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid user information: name is required."));
+        String email = Optional.ofNullable(userInfoMap.get("email")).map(Object::toString)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid user information: email is required."));
 
         User user = new User(username, email);
         return user;
