@@ -1,0 +1,4 @@
+oauth:
+  github:
+    client-id:  # gitHub client id
+    client-secret: # gitHub client secret
