@@ -16,20 +16,39 @@ import java.time.LocalDateTime;
 @Controller
 public class OauthController {
 
+    private static final String FRONT_URL = "http://localhost:3000";
     private final OauthService oauthService;
     private final UserService userService;
 
     @GetMapping("/signin/callback")
-    public RedirectView oauthCallback(@RequestParam("code") String code) {
-        LocalDateTime createdDatetime = LocalDateTime.now();
-        User user = this.oauthService.fetchUserInfo(code);
-        UserTokenResponse res = this.userService.signIn(user, createdDatetime);
-        String url = "http://localhost:3000/oauth?token=" + res.accessToken() +"&tokenExpAt=" + res.accessExpiredAt()
-                + "&refresh=" + res.refreshToken() + "&refreshExpAt=" + res.refreshExpiredAt();
+    public RedirectView oauthCallback(
+            @RequestParam(value = "code", required = false) String code,
+            @RequestParam(value = "error", required = false) String error
+    ) {
         RedirectView redirectView = new RedirectView();
-        redirectView.setUrl(url);
+        redirectView.setUrl(getRedirectUrl(code, error));
         return redirectView;
     }
 
+    private String getRedirectUrl(String code, String error) {
+        if (error != null) {
+            return FRONT_URL + "/login";
+        }
+        return buildOAuthRedirectUrl(code);
+    }
+
+    private String buildOAuthRedirectUrl(String code) {
+        LocalDateTime createdDatetime = LocalDateTime.now();
+        User user = oauthService.fetchUserInfo(code);
+        UserTokenResponse res = userService.signIn(user, createdDatetime);
+        return String.format("%s?token=%s&tokenExpAt=%s&refresh=%s&refreshExpAt=%s",
+                FRONT_URL + "/oauth",
+                res.accessToken(),
+                res.accessExpiredAt(),
+                res.refreshToken(),
+                res.refreshExpiredAt()
+        );
+    }
+    
 }
 
