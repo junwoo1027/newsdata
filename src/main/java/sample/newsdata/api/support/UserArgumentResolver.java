@@ -9,6 +9,8 @@ import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
+import sample.newsdata.api.support.error.CoreApiErrorType;
+import sample.newsdata.api.support.error.CoreApiException;
 import sample.newsdata.domain.user.ApiUser;
 import sample.newsdata.domain.user.UserToken;
 import sample.newsdata.domain.user.UserTokenRepository;
@@ -31,22 +33,22 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
         if (request == null) {
-            throw new IllegalArgumentException("Invalid request");
+            throw new CoreApiException(CoreApiErrorType.AUTH_FAILED);
         }
 
         Cookie[] cookies = (request.getCookies() != null) ? request.getCookies() : new Cookie[0];
         Cookie accessToken = Arrays.stream(cookies)
                 .filter(c -> "NEWSAK".equals(c.getName()))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("No cookies."));
+                .orElseThrow(() -> new CoreApiException(CoreApiErrorType.AUTH_FAILED));
 
         UserToken existAccessToken = userTokenRepository.findByAccessToken(accessToken.getValue());
         if (existAccessToken == null) {
-            throw new IllegalArgumentException("No accessToken.");
+            throw new CoreApiException(CoreApiErrorType.AUTH_FAILED);
         }
 
         if (existAccessToken.getAccessExpiredAt().isBefore(LocalDateTime.now())) {
-            throw new IllegalArgumentException("Expired accessToken.");
+            throw new CoreApiException(CoreApiErrorType.AUTH_FAILED);
         }
 
         return new ApiUser(existAccessToken.getUserId());

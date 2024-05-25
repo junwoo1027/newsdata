@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import sample.newsdata.api.client.GitHubClient;
 import sample.newsdata.api.client.GitHubUserClient;
+import sample.newsdata.api.support.error.CoreApiException;
 import sample.newsdata.config.OauthConfig;
 import sample.newsdata.domain.user.User;
 
@@ -70,8 +71,8 @@ class OauthServiceTest {
 
         // when && then
         assertThatThrownBy(() -> oauthService.fetchUserInfo(code))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Invalid user information: name is required.");
+                .isInstanceOf(CoreApiException.class)
+                .hasMessage("Invalid user information.");
     }
 
     @DisplayName("깃허브 유저 정보 조회 시 이메일이 없을 때 예외가 발생한다.")
@@ -89,8 +90,8 @@ class OauthServiceTest {
 
         // when && then
         assertThatThrownBy(() -> oauthService.fetchUserInfo(code))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Invalid user information: email is required.");
+                .isInstanceOf(CoreApiException.class)
+                .hasMessage("Invalid user information.");
     }
 
 }

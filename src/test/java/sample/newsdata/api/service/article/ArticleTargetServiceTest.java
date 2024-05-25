@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import sample.newsdata.IntegrationTestSupport;
 import sample.newsdata.api.controller.article.request.CreateTargetRequest;
+import sample.newsdata.api.support.error.CoreApiException;
 import sample.newsdata.domain.article.ArticleSource;
 import sample.newsdata.domain.article.ArticleTarget;
 import sample.newsdata.domain.article.ArticleTargetRepository;
@@ -79,7 +80,7 @@ class ArticleTargetServiceTest extends IntegrationTestSupport {
 
         // when && then
         assertThatThrownBy(() -> articleTargetService.createTarget(request))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(CoreApiException.class)
                 .hasMessage("Already registered keyword.");
     }
 
@@ -105,7 +106,7 @@ class ArticleTargetServiceTest extends IntegrationTestSupport {
 
         // when && then
         assertThatThrownBy(() -> articleTargetService.deleteTarget(1L))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(CoreApiException.class)
                 .hasMessage("Not found target.");
     }
 

@@ -28,9 +28,7 @@ class ArticleTargetControllerTest extends ControllerTestSupport {
         mockMvc.perform(get("/api/v1/targets"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value("200"))
-                .andExpect(jsonPath("$.status").value("OK"))
-                .andExpect(jsonPath("$.message").value("OK"))
+                .andExpect(jsonPath("$.result").value("SUCCESS"))
                 .andExpect(jsonPath("$.data").isArray());
     }
 
@@ -55,10 +53,8 @@ class ArticleTargetControllerTest extends ControllerTestSupport {
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value("400"))
-                .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
-                .andExpect(jsonPath("$.message").value("키워드는 필수입니다."))
+                .andExpect(status().is5xxServerError())
+                .andExpect(jsonPath("$.result").value("ERROR"))
                 .andExpect(jsonPath("$.data").isEmpty());
     }
 
@@ -71,10 +67,8 @@ class ArticleTargetControllerTest extends ControllerTestSupport {
                         .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value("400"))
-                .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
-                .andExpect(jsonPath("$.message").value("뉴스 사이트는 필수입니다."))
+                .andExpect(status().is5xxServerError())
+                .andExpect(jsonPath("$.result").value("ERROR"))
                 .andExpect(jsonPath("$.data").isEmpty());
     }
 

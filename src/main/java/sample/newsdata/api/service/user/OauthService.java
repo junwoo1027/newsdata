@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import sample.newsdata.api.client.GitHubClient;
 import sample.newsdata.api.client.GitHubUserClient;
+import sample.newsdata.api.support.error.CoreApiErrorType;
+import sample.newsdata.api.support.error.CoreApiException;
 import sample.newsdata.config.OauthConfig;
 import sample.newsdata.domain.user.User;
 
@@ -24,9 +26,10 @@ public class OauthService {
         Map<String, Object> userInfoMap = gitHubUserClient.getUser("token " + accessToken);
 
         String username = Optional.ofNullable(userInfoMap.get("name")).map(Object::toString)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid user information: name is required."));
+
+                .orElseThrow(() -> new CoreApiException(CoreApiErrorType.INVALID_USER_INFO));
         String email = Optional.ofNullable(userInfoMap.get("email")).map(Object::toString)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid user information: email is required."));
+                .orElseThrow(() -> new CoreApiException(CoreApiErrorType.INVALID_USER_INFO));
 
         User user = new User(username, email);
         return user;
@@ -40,7 +43,7 @@ public class OauthService {
                 return keyValue.length > 1 ? keyValue[1] : null;
             }
         }
-        throw new IllegalArgumentException("Access token not found in the response.");
+        throw new CoreApiException(CoreApiErrorType.AUTH_FAILED);
     }
 
 }

@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import sample.newsdata.api.ApiResponse;
+import sample.newsdata.api.support.response.ApiResponse;
 import sample.newsdata.api.controller.article.request.CreateArticleRequest;
 import sample.newsdata.api.service.article.ArticleService;
 import sample.newsdata.domain.article.response.ArticleResponse;
@@ -22,12 +22,12 @@ public class ArticleController {
 
     @GetMapping("/api/v1/articles")
     public ApiResponse<List<ArticleResponse>> getArticles(ApiUser apiUser) {
-        return ApiResponse.ok(this.articleService.getArticles());
+        return ApiResponse.success(this.articleService.getArticles());
     }
 
     @PostMapping("/api/v1/articles")
     public ApiResponse<List<ArticleResponse>> createNews(ApiUser apiUser, @Valid @RequestBody CreateArticleRequest request) {
-        return ApiResponse.ok(this.articleService.createArticle(request));
+        return ApiResponse.success(this.articleService.createArticle(request));
     }
     
 }

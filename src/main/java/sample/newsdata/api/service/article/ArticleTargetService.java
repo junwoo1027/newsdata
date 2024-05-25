@@ -4,6 +4,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import sample.newsdata.api.controller.article.request.CreateTargetRequest;
+import sample.newsdata.api.support.error.CoreApiErrorType;
+import sample.newsdata.api.support.error.CoreApiException;
 import sample.newsdata.domain.article.ArticleTarget;
 import sample.newsdata.domain.article.ArticleTargetRepository;
 import sample.newsdata.domain.article.response.ArticleTargetResponse;
@@ -28,7 +30,7 @@ public class ArticleTargetService {
     public ArticleTargetResponse createTarget(CreateTargetRequest request) {
         boolean existsTargetByKeyword = articleTargetRepository.existsByKeyword(request.keyword());
         if (existsTargetByKeyword) {
-            throw new IllegalArgumentException("Already registered keyword.");
+            throw new CoreApiException(CoreApiErrorType.ALREADY_REGISTERED_KEYWORD);
         }
 
         ArticleTarget target = articleTargetRepository.save(new ArticleTarget(request.keyword(), request.articleSource()));
@@ -43,7 +45,7 @@ public class ArticleTargetService {
 
     private ArticleTarget getArticleTarget(Long targetId) {
         ArticleTarget articleTarget = articleTargetRepository.findById(targetId)
-                .orElseThrow(() -> new IllegalArgumentException("Not found target."));
+                .orElseThrow(() -> new CoreApiException(CoreApiErrorType.NOT_FOUND_TARGET));
         return articleTarget;
     }
 
