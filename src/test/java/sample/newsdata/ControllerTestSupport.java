@@ -7,7 +7,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import sample.newsdata.api.controller.article.ArticleController;
 import sample.newsdata.api.controller.article.ArticleTargetController;
-import sample.newsdata.api.controller.user.UserController;
+import sample.newsdata.api.controller.user.OauthController;
 import sample.newsdata.api.service.article.ArticleService;
 import sample.newsdata.api.service.article.ArticleTargetService;
 import sample.newsdata.api.service.user.OauthService;
@@ -15,7 +15,7 @@ import sample.newsdata.api.service.user.UserService;
 import sample.newsdata.api.support.UserArgumentResolver;
 
 @WebMvcTest(controllers = {
-        UserController.class,
+        OauthController.class,
         ArticleTargetController.class,
         ArticleController.class
 })
