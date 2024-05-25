@@ -8,7 +8,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 import sample.newsdata.domain.article.Article;
-import sample.newsdata.domain.article.ArticleRepository;
 import sample.newsdata.domain.article.ArticleSource;
 
 import java.io.IOException;
@@ -25,7 +24,6 @@ public class NaverArticleScraper implements ArticleScraper {
     private static final String BASE_URL = "https://search.naver.com/search.naver";
     private static final int PAGE_SIZE = 10;
     private static final int TOTAL_PAGES = 10;
-    private final ArticleRepository articleRepository;
     private List<Article> articleList = new ArrayList<>();
 
     @Transactional
@@ -41,8 +39,7 @@ public class NaverArticleScraper implements ArticleScraper {
                 log.error("Error fetching document for URL at page {}: {}", i, e.getMessage());
             }
         }
-        List<Article> articles = this.saveArticles(this.articleList);
-        return articles;
+        return articleList;
     }
 
     private String generateUrl(String keyword, int start) {
@@ -68,16 +65,6 @@ public class NaverArticleScraper implements ArticleScraper {
                 this.articleList.add(article);
             }
         }
-    }
-
-    private List<Article> saveArticles(List<Article> articleList) {
-        List<Article> articles = new ArrayList<>();
-        try {
-            articles = articleRepository.saveAll(articleList);
-        } catch (Exception e) {
-            log.error("Error saving articles: {}", e.getMessage());
-        }
-        return articles;
     }
 
 }

@@ -24,17 +24,17 @@ public class ArticleTargetController {
     }
 
     @PostMapping("/api/v1/targets")
-    public ApiResponse<ArticleTargetResponse> createArticleTarget(@Valid @RequestBody CreateTargetRequest request) {
+    public ApiResponse<ArticleTargetResponse> createArticleTarget(ApiUser apiUser, @Valid @RequestBody CreateTargetRequest request) {
         return ApiResponse.ok(this.articleTargetService.createTarget(request));
     }
 
     @PatchMapping("/api/v1/targets/{targetId}")
-    public ApiResponse<ArticleTargetResponse> updateArticleTarget(@PathVariable("targetId") Long targetId, @Valid @RequestBody UpdateTargetRequest request) {
+    public ApiResponse<ArticleTargetResponse> updateArticleTarget(ApiUser apiUser, @PathVariable("targetId") Long targetId, @Valid @RequestBody UpdateTargetRequest request) {
         return ApiResponse.ok(this.articleTargetService.updateTarget(targetId, request));
     }
 
     @DeleteMapping("/api/v1/targets/{targetId}")
-    public ApiResponse deleteArticleTarget(@PathVariable("targetId") Long targetId) {
+    public ApiResponse deleteArticleTarget(ApiUser apiUser, @PathVariable("targetId") Long targetId) {
         this.articleTargetService.deleteTarget(targetId);
         return ApiResponse.ok();
     }
