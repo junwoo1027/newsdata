@@ -1,6 +1,5 @@
 package sample.newsdata.api.service.article;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
@@ -26,7 +25,6 @@ public class DaumArticleScraper implements ArticleScraper {
     private static final int TOTAL_PAGES = 10;
     private List<Article> articleList = new ArrayList<>();
 
-    @Transactional
     @Override
     public List<Article> fetchArticles(String keyword) {
         for (int i = 1; i <= TOTAL_PAGES; i++) {
@@ -34,7 +32,8 @@ public class DaumArticleScraper implements ArticleScraper {
                 String url = this.generateUrl(keyword, i);
                 Document document = this.fetchDocument(url);
                 this.processArticles(document, keyword);
-            } catch (IOException e) {
+                Thread.sleep(1000);
+            } catch (InterruptedException | IOException e) {
                 log.error("Error fetching document for URL at page {}: {}", i, e.getMessage());
             }
         }

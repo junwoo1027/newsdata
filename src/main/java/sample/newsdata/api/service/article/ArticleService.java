@@ -4,9 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import sample.newsdata.api.controller.article.request.CreateArticleRequest;
-import sample.newsdata.domain.article.Article;
-import sample.newsdata.domain.article.ArticleRepository;
-import sample.newsdata.domain.article.ArticleSource;
+import sample.newsdata.domain.article.*;
 import sample.newsdata.domain.article.response.ArticleResponse;
 
 import java.util.ArrayList;
@@ -20,12 +18,27 @@ public class ArticleService {
     private final NaverArticleScraper naverArticleScraper;
     private final DaumArticleScraper daumArticleScraper;
     private final ArticleRepository articleRepository;
+    private final ArticleTargetRepository articleTargetRepository;
 
     @Transactional
-    public List<ArticleResponse> createNews(CreateArticleRequest request) {
+    public List<ArticleResponse> createArticle(CreateArticleRequest request) {
         List<Article> getArticles = this.fetchArticles(request.keyword(), request.articleSource());
         List<Article> articles = articleRepository.saveAll(getArticles);
         return articles.stream()
+                .map(ArticleResponse::of)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public List<ArticleResponse> createArticlesByTargets() {
+        List<ArticleTarget> targets = articleTargetRepository.findAll();
+        List<Article> articles = new ArrayList<>();
+
+        for (ArticleTarget target : targets) {
+            articles = this.fetchArticles(target.getKeyword(), target.getArticleSource());
+        }
+        List<Article> savedArticles = articleRepository.saveAll(articles);
+        return savedArticles.stream()
                 .map(ArticleResponse::of)
                 .collect(Collectors.toList());
     }
