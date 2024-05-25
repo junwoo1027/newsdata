@@ -4,7 +4,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import sample.newsdata.api.controller.article.request.CreateTargetRequest;
-import sample.newsdata.api.controller.article.request.UpdateTargetRequest;
 import sample.newsdata.domain.article.ArticleTarget;
 import sample.newsdata.domain.article.ArticleTargetRepository;
 import sample.newsdata.domain.article.response.ArticleTargetResponse;
@@ -34,13 +33,6 @@ public class ArticleTargetService {
 
         ArticleTarget target = articleTargetRepository.save(new ArticleTarget(request.keyword(), request.articleSource()));
         return ArticleTargetResponse.of(target);
-    }
-
-    @Transactional
-    public ArticleTargetResponse updateTarget(Long targetId, UpdateTargetRequest request) {
-        ArticleTarget articleTarget = getArticleTarget(targetId);
-        articleTarget.update(request.keyword(), request.articleSource());
-        return ArticleTargetResponse.of(articleTarget);
     }
 
     @Transactional

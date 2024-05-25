@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import sample.newsdata.api.ApiResponse;
 import sample.newsdata.api.controller.article.request.CreateTargetRequest;
-import sample.newsdata.api.controller.article.request.UpdateTargetRequest;
 import sample.newsdata.api.service.article.ArticleTargetService;
 import sample.newsdata.domain.article.response.ArticleTargetResponse;
 import sample.newsdata.domain.user.ApiUser;
@@ -26,11 +25,6 @@ public class ArticleTargetController {
     @PostMapping("/api/v1/targets")
     public ApiResponse<ArticleTargetResponse> createArticleTarget(ApiUser apiUser, @Valid @RequestBody CreateTargetRequest request) {
         return ApiResponse.ok(this.articleTargetService.createTarget(request));
-    }
-
-    @PatchMapping("/api/v1/targets/{targetId}")
-    public ApiResponse<ArticleTargetResponse> updateArticleTarget(ApiUser apiUser, @PathVariable("targetId") Long targetId, @Valid @RequestBody UpdateTargetRequest request) {
-        return ApiResponse.ok(this.articleTargetService.updateTarget(targetId, request));
     }
 
     @DeleteMapping("/api/v1/targets/{targetId}")

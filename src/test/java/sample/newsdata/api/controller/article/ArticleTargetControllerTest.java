@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import sample.newsdata.ControllerTestSupport;
 import sample.newsdata.api.controller.article.request.CreateTargetRequest;
-import sample.newsdata.api.controller.article.request.UpdateTargetRequest;
 import sample.newsdata.domain.article.ArticleSource;
 import sample.newsdata.domain.article.response.ArticleTargetResponse;
 
@@ -79,57 +78,10 @@ class ArticleTargetControllerTest extends ControllerTestSupport {
                 .andExpect(jsonPath("$.data").isEmpty());
     }
 
-    @DisplayName("뉴스 수집 타겟을 수정한다.")
-    @Test
-    void updateArticleTarget() throws Exception {
-        UpdateTargetRequest request = new UpdateTargetRequest("개발자", ArticleSource.DAUM);
-
-        mockMvc.perform(patch("/api/v1/targets/1")
-                        .content(objectMapper.writeValueAsString(request))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk());
-    }
-
-    @DisplayName("뉴스 수집 타겟을 수정할 때 키워드는 필수값이다.")
-    @Test
-    void updateArticleTargetWithoutKeyword() throws Exception {
-        UpdateTargetRequest request = new UpdateTargetRequest(null, ArticleSource.DAUM);
-
-        mockMvc.perform(patch("/api/v1/targets/1")
-                        .content(objectMapper.writeValueAsString(request))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value("400"))
-                .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
-                .andExpect(jsonPath("$.message").value("키워드는 필수입니다."))
-                .andExpect(jsonPath("$.data").isEmpty());
-    }
-
-    @DisplayName("뉴스 수집 타겟을 수정할 때 뉴스 사이트 정보는 필수값이다.")
-    @Test
-    void updateArticleTargetWithoutArticleSource() throws Exception {
-        UpdateTargetRequest request = new UpdateTargetRequest("개발자", null);
-
-        mockMvc.perform(patch("/api/v1/targets/1")
-                        .content(objectMapper.writeValueAsString(request))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value("400"))
-                .andExpect(jsonPath("$.status").value("BAD_REQUEST"))
-                .andExpect(jsonPath("$.message").value("뉴스 사이트는 필수입니다."))
-                .andExpect(jsonPath("$.data").isEmpty());
-    }
-
     @DisplayName("뉴스 수집 타겟을 삭제한다.")
     @Test
     void deleteArticleTarget() throws Exception {
-        UpdateTargetRequest request = new UpdateTargetRequest("test", ArticleSource.DAUM);
-
         mockMvc.perform(delete("/api/v1/targets/1")
-                        .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk());

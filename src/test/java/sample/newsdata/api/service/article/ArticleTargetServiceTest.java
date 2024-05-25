@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import sample.newsdata.IntegrationTestSupport;
 import sample.newsdata.api.controller.article.request.CreateTargetRequest;
-import sample.newsdata.api.controller.article.request.UpdateTargetRequest;
 import sample.newsdata.domain.article.ArticleSource;
 import sample.newsdata.domain.article.ArticleTarget;
 import sample.newsdata.domain.article.ArticleTargetRepository;
@@ -82,33 +81,6 @@ class ArticleTargetServiceTest extends IntegrationTestSupport {
         assertThatThrownBy(() -> articleTargetService.createTarget(request))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Already registered keyword.");
-    }
-
-    @DisplayName("키워드와 뉴스 사이트를 입력받아 수집 설정을 업데이트한다.")
-    @Test
-    void updateTarget() {
-        // given
-        ArticleTarget target = articleTargetRepository.save(new ArticleTarget("개발자", ArticleSource.ALL));
-        UpdateTargetRequest request = new UpdateTargetRequest("자바", ArticleSource.NAVER);
-
-        // when
-        ArticleTargetResponse result = articleTargetService.updateTarget(target.getId(), request);
-
-        // then
-        assertThat(result.keyword()).isEqualTo("자바");
-        assertThat(result.articleSource()).isEqualTo(ArticleSource.NAVER);
-    }
-
-    @DisplayName("뉴스 수집 설정 업데이트 시 해당 데이터가 없으면 예외가 발생한다..")
-    @Test
-    void updateTargetNotTarget() {
-        // given
-        UpdateTargetRequest request = new UpdateTargetRequest("자바", ArticleSource.NAVER);
-
-        // when && then
-        assertThatThrownBy(() -> articleTargetService.updateTarget(1L, request))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Not found target.");
     }
 
     @DisplayName("타겟 id를 받아 해당 데이터를 삭제한다.")
