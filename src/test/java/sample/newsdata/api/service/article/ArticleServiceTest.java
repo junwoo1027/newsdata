@@ -1,5 +1,6 @@
 package sample.newsdata.api.service.article;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,6 +35,37 @@ class ArticleServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private ArticleService articleService;
+
+    @AfterEach
+    void clear() {
+        articleRepository.deleteAllInBatch();
+        articleTargetRepository.deleteAllInBatch();
+    }
+
+    @DisplayName("뉴스 목록을 조회한다.")
+    @Test
+    void getArticles() {
+        // given
+        articleRepository.saveAll(
+                List.of(
+                        new Article("title1", "desc1", "test", "test", ArticleSource.DAUM),
+                        new Article("title2", "desc2", "test", "test", ArticleSource.NAVER),
+                        new Article("title3", "desc3", "test", "test", ArticleSource.ALL)
+                )
+        );
+
+        // when
+        List<ArticleResponse> results = articleService.getArticles();
+
+        // then
+        assertThat(results).hasSize(3);
+        assertThat(results).extracting("title", "description", "articleSource")
+                .containsExactlyInAnyOrder(
+                        tuple("title1", "desc1", ArticleSource.DAUM),
+                        tuple("title2", "desc2", ArticleSource.NAVER),
+                        tuple("title3", "desc3", ArticleSource.ALL)
+                );
+    }
 
     @DisplayName("키워드와 뉴스 사이트 정보를 입력받아 뉴스 데이터를 저장한다.")
     @Test

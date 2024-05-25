@@ -20,6 +20,13 @@ public class ArticleService {
     private final ArticleRepository articleRepository;
     private final ArticleTargetRepository articleTargetRepository;
 
+    public List<ArticleResponse> getArticles() {
+        List<Article> articles = this.articleRepository.findAll();
+        return articles.stream()
+                .map(ArticleResponse::of)
+                .collect(Collectors.toList());
+    }
+
     @Transactional
     public List<ArticleResponse> createArticle(CreateArticleRequest request) {
         List<Article> getArticles = this.fetchArticles(request.keyword(), request.articleSource());
