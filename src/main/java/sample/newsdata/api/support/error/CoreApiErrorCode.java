@@ -6,6 +6,8 @@ public enum CoreApiErrorCode {
     E1000,
     E1001,
     E1002,
-    E1003
+    E1003,
+    E1004,
+    E1005,
 
 }

@@ -11,8 +11,9 @@ public enum CoreApiErrorType {
                   LogLevel.ERROR),
     AUTH_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, CoreApiErrorCode.E1001, "Auth failed.", LogLevel.ERROR),
     NOT_FOUND_TARGET(HttpStatus.INTERNAL_SERVER_ERROR, CoreApiErrorCode.E1002, "Not found target.", LogLevel.ERROR),
-    INVALID_USER_INFO(HttpStatus.INTERNAL_SERVER_ERROR, CoreApiErrorCode.E1003, "Invalid user information.", LogLevel.ERROR);
-
+    INVALID_USER_INFO(HttpStatus.INTERNAL_SERVER_ERROR, CoreApiErrorCode.E1003, "Invalid user information.", LogLevel.ERROR),
+    EXPIRED_REFRESH_TOKEN(HttpStatus.INTERNAL_SERVER_ERROR, CoreApiErrorCode.E1004, "Expired refresh token.", LogLevel.ERROR),
+    NOT_FOUND_USER_TOKEN(HttpStatus.INTERNAL_SERVER_ERROR, CoreApiErrorCode.E1005, "Not found user token.", LogLevel.ERROR);
     private final HttpStatus status;
 
     private final CoreApiErrorCode code;
