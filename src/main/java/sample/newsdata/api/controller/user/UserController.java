@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import sample.newsdata.api.service.user.UserService;
+import sample.newsdata.api.support.response.ApiResponse;
 import sample.newsdata.domain.user.response.UserTokenResponse;
 
 import java.time.LocalDateTime;
@@ -19,7 +20,7 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/api/v1/refresh")
+    @GetMapping("/api/v1/tokens/refresh")
     public ResponseEntity refreshToken(@CookieValue("NEWSRK") String refreshToken) {
         LocalDateTime now = LocalDateTime.now();
         UserTokenResponse token = userService.refreshToken(refreshToken, now);
@@ -29,7 +30,7 @@ public class UserController {
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, accessCookie.toString())
                 .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
-                .body("Cookie added.");
+                .body(ApiResponse.success());
     }
 
     private static ResponseCookie createCookie(String name, String token, LocalDateTime now, LocalDateTime expiredAt) {
