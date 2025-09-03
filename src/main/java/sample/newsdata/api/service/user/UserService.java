@@ -29,8 +29,8 @@ public class UserService {
         } else {
             userToUse = findUser;
         }
-        UserToken userToken = this.createUserToken(createdDateTime, userToUse.getId());
-        return UserTokenResponse.of(userToken);
+        UserToken userTokenss = this.createUserToken(createdDateTime, userToUse.getId());
+        return UserTokenResponse.of(userTokenss);
     }
 
     @Transactional
